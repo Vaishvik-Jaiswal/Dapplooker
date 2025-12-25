@@ -9,7 +9,7 @@ function HyperLiquidPnL() {
 
   const getDefaultStartDate = () => {
     const date = new Date();
-    date.setDate(date.getDate() - 7);
+    date.setDate(date.getDate() - 1);
     return date.toISOString().split('T')[0];
   };
 
@@ -170,18 +170,7 @@ function HyperLiquidPnL() {
           >
             Last 7 days
           </span>
-          <span
-            onClick={() => {
-              const end = getDefaultEndDate();
-              const start = new Date(end);
-              start.setDate(start.getDate() - 30);
-              setStartDate(start.toISOString().split('T')[0]);
-              setEndDate(end);
-            }}
-            className="bg-white px-3 py-1.5 rounded-md text-sm cursor-pointer border border-gray-200 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-all duration-200"
-          >
-            Last 30 days
-          </span>
+        
         </div>
       </div>
 
