@@ -1,5 +1,4 @@
 const axios = require('axios');
-const fs = require('fs');
 
 const BASE_URL = 'https://api.hyperliquid.xyz';
 
@@ -55,10 +54,6 @@ async function fetchUserState(walletAddress) {
     if (!data) {
       throw new Error('Invalid response structure from HyperLiquid API');
     }
-    fs.writeFileSync(
-      'user_state_response.json',
-      JSON.stringify(data, null, 2)
-    );
     return data;
   } catch (error) {
     if (error.response) {
@@ -109,10 +104,6 @@ async function getUserFills(walletAddress, startDate, endDate) {
             timeout: 30000
           }
         );
-        fs.writeFileSync(
-          'fills_response.json',
-          JSON.stringify(response.data, null, 2)
-        );
       } catch (err) {
         if (err.response?.status === 422) {
           try {
@@ -157,10 +148,6 @@ async function getUserFills(walletAddress, startDate, endDate) {
     if (allFills.length > 0) {
       console.log(`Successfully fetched ${allFills.length} fills from userFillsByTime endpoint`);
     }
-    fs.writeFileSync(
-      'fills2_response.json',
-      JSON.stringify(allFills, null, 2)
-    );
     return allFills;
   } catch (error) {
     throw new Error(`HyperLiquid API error (getUserFills): ${error.message}`);
@@ -195,10 +182,6 @@ async function getUserFunding(walletAddress, startDate, endDate) {
             },
             timeout: 30000
           }
-        );
-        fs.writeFileSync(
-          'funding_response.json',
-          JSON.stringify(response.data, null, 2)
         );
       } catch (err) {
         if (err.response?.status === 422) {
