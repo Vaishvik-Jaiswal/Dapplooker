@@ -19,12 +19,18 @@ function HyperLiquidPnL() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
+  const [showRawResponse, setShowRawResponse] = useState(false);
+  const [rawResponse, setRawResponse] = useState(null);
+  const [showRawWalletData, setShowRawWalletData] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     setResult(null);
+    setRawResponse(null);
+    setShowRawResponse(false);
+    setShowRawWalletData(false);
 
     if (!walletAddress || !walletAddress.startsWith('0x') || walletAddress.length !== 42) {
       setError('Please enter a valid Ethereum wallet address (0x...)');
@@ -60,6 +66,7 @@ function HyperLiquidPnL() {
       );
 
       setResult(response.data);
+      setRawResponse(response.data);
     } catch (err) {
       if (err.response) {
         setError(err.response.data?.error || err.response.data?.message || `Error: ${err.response.status} ${err.response.statusText}`);
@@ -188,6 +195,41 @@ function HyperLiquidPnL() {
 
       {result && (
         <div className="mt-8 space-y-6">
+          <div className="flex justify-end gap-2 mb-4">
+            <button
+              type="button"
+              onClick={() => setShowRawWalletData(!showRawWalletData)}
+              className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              {showRawWalletData ? 'Hide' : 'Show'} Raw HyperLiquid Data
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowRawResponse(!showRawResponse)}
+              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              {showRawResponse ? 'Hide' : 'Show'} Full API Response
+            </button>
+          </div>
+
+          {showRawWalletData && rawResponse?.rawData && (
+            <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-96 mb-6">
+              <div className="text-purple-400 text-sm font-semibold mb-2">Raw HyperLiquid Wallet Data (from fetchWalletData):</div>
+              <pre className="text-green-400 text-xs font-mono whitespace-pre-wrap">
+                {JSON.stringify(rawResponse.rawData, null, 2)}
+              </pre>
+            </div>
+          )}
+
+          {showRawResponse && rawResponse && (
+            <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-96 mb-6">
+              <div className="text-indigo-400 text-sm font-semibold mb-2">Full API Response:</div>
+              <pre className="text-green-400 text-xs font-mono whitespace-pre-wrap">
+                {JSON.stringify(rawResponse, null, 2)}
+              </pre>
+            </div>
+          )}
+
           <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border-l-4 border-indigo-500">
             <div className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               📊 Summary

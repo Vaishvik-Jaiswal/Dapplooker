@@ -8,6 +8,8 @@ function TokenInsight() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
+  const [showRawResponse, setShowRawResponse] = useState(false);
+  const [rawResponse, setRawResponse] = useState(null);
 
   const exampleTokens = ['bitcoin', 'ethereum', 'chainlink', 'cardano', 'solana', 'polygon'];
 
@@ -16,6 +18,8 @@ function TokenInsight() {
     setLoading(true);
     setError(null);
     setResult(null);
+    setRawResponse(null);
+    setShowRawResponse(false);
 
     try {
       const response = await axios.post(
@@ -33,6 +37,7 @@ function TokenInsight() {
       );
 
       setResult(response.data);
+      setRawResponse(response.data);
     } catch (err) {
       if (err.response) {
         setError(err.response.data?.error || `Error: ${err.response.status} ${err.response.statusText}`);
@@ -160,10 +165,28 @@ function TokenInsight() {
 
       {result && (
         <div className="mt-8 p-6 bg-gray-50 rounded-lg border-l-4 border-indigo-500">
-          <div className="mb-6">
-            <div className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="mb-4 flex justify-between items-center">
+            <div className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               📊 Token Information
             </div>
+            <button
+              type="button"
+              onClick={() => setShowRawResponse(!showRawResponse)}
+              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              {showRawResponse ? 'Hide' : 'Show'} Raw API Response
+            </button>
+          </div>
+
+          {showRawResponse && rawResponse && (
+            <div className="mb-6 bg-gray-900 rounded-lg p-4 overflow-auto max-h-96">
+              <pre className="text-green-400 text-xs font-mono whitespace-pre-wrap">
+                {JSON.stringify(rawResponse, null, 2)}
+              </pre>
+            </div>
+          )}
+
+          <div className="mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="bg-white p-4 rounded-lg border border-gray-200">
                 <div className="text-xs text-gray-600 mb-1">Name</div>

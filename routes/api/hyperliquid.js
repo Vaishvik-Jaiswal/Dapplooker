@@ -134,6 +134,12 @@ router.get('/:wallet/pnl', async (req, res) => {
           funding: hasFunding
         },
         notes: notes
+      },
+      rawData: {
+        userState: walletData.userState,
+        trades: walletData.trades,
+        funding: walletData.funding,
+        fetchedAt: walletData.fetchedAt
       }
     };
 
